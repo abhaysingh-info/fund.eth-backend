@@ -1,7 +1,8 @@
 
 import { sign as JWTSign, verify as JWTVerify } from "jsonwebtoken"
 import { getHash, getRandomBytes, scryptHash } from '../utils';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Event } from "./event";
 
 
 
@@ -49,9 +50,8 @@ export class User extends BaseEntity {
     @Column({ type: 'varchar', length: 255, nullable: true })
     walletAddress!: string | null;
 
-
-    // @Column({ type: 'number', nullable: true })
-    // passwordTries!: number | null;
+    @OneToMany(() => Event, (event) => event.user) // Define the relationship
+    events!: Event[];
 
 
     async getHash(value: string) {

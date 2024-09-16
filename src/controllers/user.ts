@@ -57,14 +57,14 @@ export async function UserLogin(req: Request, res: Response) {
         if ((user.passwordTries as number) >= 5) {
             user.isBlocked = true;
         }
-        await user.save();
+        await (user as any).save();
 
         throw res.status(403).json(
             { message: 'Email or password you entered is incorrect!', }
         );
     } else {
         user.passwordTries = 0;
-        await user.save();
+        await (user as any).save();
     }
 
     if (user.isBlocked) {
