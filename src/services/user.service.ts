@@ -9,7 +9,6 @@ export class UserService {
     async create(createUserDto: IUserCreate) {
         let u = new this.User()
 
-        // check if email exists
 
         // validate users using joi
         let result = UserCreateDto.validate(createUserDto)
@@ -20,7 +19,6 @@ export class UserService {
 
         u.email = createUserDto.email
         u.name = createUserDto.name
-        u.password = createUserDto.password
 
 
 

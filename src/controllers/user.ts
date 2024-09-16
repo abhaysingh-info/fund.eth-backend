@@ -11,16 +11,16 @@ export async function UserCreate(req: Request, res: Response) {
     var userBody = req.body
 
     try {
-        const user = await userService.create(userBody);
-        return {
+        await userService.create(userBody);
+        res.status(201).json({
             success: true,
             message: 'Congratulations Created Successfully!',
-        };
-    } catch (e) {
-        return {
+        });
+    } catch (e: Error | any) {
+        res.status(400).json({
             success: false,
-            message: 'We are sorry, there was an error while creating your account',
-        };
+            message: e.message || 'We are sorry, there was an error while creating your account',
+        });
     }
 }
 
@@ -38,7 +38,7 @@ export async function UserLogin(req: Request, res: Response) {
     );
 
     if (!user) {
-        throw res.status(403).json(
+        return res.status(403).json(
             { message: `User with email ${userBody.email} not found!`, }
         );
     }
@@ -46,20 +46,21 @@ export async function UserLogin(req: Request, res: Response) {
     const doesProvidedPasswordMatchUserPassword: boolean =
         await user.comparePassword(userBody.password);
 
-    if ((user.password_tries as number) >= 5) {
-        throw res.status(403).json(
+
+    if ((user.password_tries as number) >= 50) {
+        return res.status(403).json(
             { message: 'Your account is Blocked please check your email for further instructions or request a password reset!', }
         );
     }
 
     if (!doesProvidedPasswordMatchUserPassword) {
         user.password_tries = (user.password_tries as number) + 1;
-        if ((user.password_tries as number) >= 5) {
+        if ((user.password_tries as number) >= 500) {
             user.is_blocked = true;
         }
         await (user as any).save();
 
-        throw res.status(403).json(
+        return res.status(403).json(
             { message: 'Email or password you entered is incorrect!', }
         );
     } else {
@@ -68,7 +69,7 @@ export async function UserLogin(req: Request, res: Response) {
     }
 
     if (user.is_blocked) {
-        throw res.status(403).json(
+        return res.status(403).json(
             {
                 message:
                     'Your account is Blocked please check your email for further instructions or request a password reset!',
@@ -77,19 +78,35 @@ export async function UserLogin(req: Request, res: Response) {
     }
 
     if (user.suspended) {
-        throw res.status(403).json(
+        return res.status(403).json(
             {
                 message:
                     'Your account is suspended, if you think this was a mistake please contact our support',
             }
         );
     }
+    let output = {}
 
-    return await SetLoginToken(res, user);
+    try {
+        output = await SetLoginToken(res, user);
+    } catch (err: any) {
+        return res.status(403).json(
+            {
+                message: err.message
+            }
+        );
+    }
+
+    res.status(200).json(output)
+    return
 }
 
 export async function UserLogout(req: Request, res: Response) {
     res.clearCookie('token');
     res.clearCookie('roles');
-    return { success: true };
+    return res.status(200).json({ success: true });
+}
+
+export async function UserVerifySession(req: Request, res: Response) {
+    return res.status(200).json({ success: true });
 }

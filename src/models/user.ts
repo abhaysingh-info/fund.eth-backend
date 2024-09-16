@@ -23,7 +23,6 @@ export class User extends BaseEntity {
 
     @Column({
         type: 'varchar', length: 255, nullable: false,
-        select: false
     }) // Don't expose password in queries
     password!: string;
 
@@ -88,7 +87,7 @@ export class User extends BaseEntity {
     async comparePassword(
         passwordFromLogin: string,
     ): Promise<boolean> {
-        const [salt, password] = this.password.split('.');
+        const [salt, password] = (this.password || "")?.split('.');
         return (
             (await scryptHash(passwordFromLogin, salt)).toString('hex') === password
         );

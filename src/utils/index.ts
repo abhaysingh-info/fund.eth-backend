@@ -26,16 +26,14 @@ export function getRandomBytes(length: number) {
 
 export function GetLoginToken(req: Request): string | null {
     const token: string | null =
-        (req.cookies.token as string) || (req.body.token as string) || null;
+        (req.cookies?.token as string) || (req.body?.token as string) || null;
 
     return token;
 }
 
 export async function SetLoginToken(res: Response, user: User) {
-    const token: string = await user.getJwtToken();
+    const token: string = user.getJwtToken();
     res.cookie('token', token);
-
-
     return {
         token,
         user: {

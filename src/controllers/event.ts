@@ -18,7 +18,7 @@ export async function EventCreate(req: Request, res: Response) {
 
 export async function EventUpdate(req: Request, res: Response) {
     let body = req.body
-    let id = req.params.id
+    let id = req.params.eventId
 
     if (!Number.isSafeInteger(id)) {
         return res.status(400).json({ message: "invalid id" })
