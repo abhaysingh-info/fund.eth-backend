@@ -1,23 +1,24 @@
 export interface IEventCreateDto {
     name: string;
     description: string;
-    featuredImage: string;
-    blockNumber: number;
-    ethTransactionId: string;
-    goalAmount: number;
+    featured_image: string;
+    block_number: number;
+    eth_transaction_id: string;
+    goal_amount: number;
 }
 
 export interface IEventUpdateDto {
     name: string;
     description: string;
-    featuredImage: string;
-    goalAmount: number;
+    featured_image: string;
+    goal_amount: number;
 }
 
 export interface IEventFilterDto {
+    id?: number
     name?: string
-    minAmount?: number
-    maxAmount?: number
-    transactionId?: string
-    blockNumber?: number
+    min_amount?: number
+    max_amount?: number
+    transaction_id?: string
+    block_number?: number
 }

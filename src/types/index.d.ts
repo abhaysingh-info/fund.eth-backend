@@ -3,17 +3,17 @@ export interface IUser {
     name: string
     email: string
     password: string
-    passwordTries: number
-    emailVerifyToken: string
-    emailVerified: string
-    passwordResetToken: string
-    accountSuspended: boolean
-    walletAddress: string
+    password_tries: number
+    email_verify_token: string
+    email_verified: string
+    password_reset_token: string
+    account_suspended: boolean
+    wallet_address: string
 }
 
 export interface IUserCreate {
     name: string
     email: string
     password: string
-    confirmPassword: string
+    confirm_password: string
 }

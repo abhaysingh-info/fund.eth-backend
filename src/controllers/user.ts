@@ -46,16 +46,16 @@ export async function UserLogin(req: Request, res: Response) {
     const doesProvidedPasswordMatchUserPassword: boolean =
         await user.comparePassword(userBody.password);
 
-    if ((user.passwordTries as number) >= 5) {
+    if ((user.password_tries as number) >= 5) {
         throw res.status(403).json(
             { message: 'Your account is Blocked please check your email for further instructions or request a password reset!', }
         );
     }
 
     if (!doesProvidedPasswordMatchUserPassword) {
-        user.passwordTries = (user.passwordTries as number) + 1;
-        if ((user.passwordTries as number) >= 5) {
-            user.isBlocked = true;
+        user.password_tries = (user.password_tries as number) + 1;
+        if ((user.password_tries as number) >= 5) {
+            user.is_blocked = true;
         }
         await (user as any).save();
 
@@ -63,11 +63,11 @@ export async function UserLogin(req: Request, res: Response) {
             { message: 'Email or password you entered is incorrect!', }
         );
     } else {
-        user.passwordTries = 0;
+        user.password_tries = 0;
         await (user as any).save();
     }
 
-    if (user.isBlocked) {
+    if (user.is_blocked) {
         throw res.status(403).json(
             {
                 message:

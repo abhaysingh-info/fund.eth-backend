@@ -18,10 +18,10 @@ export class EventService {
 
         event.name = dto.name;
         event.description = dto.description;
-        event.featuredImage = dto.featuredImage;
-        event.blockNumber = dto.blockNumber;
-        event.ethTransactionId = dto.ethTransactionId;
-        event.goalAmount = dto.goalAmount;
+        event.featured_image = dto.featured_image;
+        event.block_number = dto.block_number;
+        event.eth_transaction_id = dto.eth_transaction_id;
+        event.goal_amount = dto.goal_amount;
 
         try {
             (event as any).save()
@@ -57,8 +57,8 @@ export class EventService {
 
         event.name = dto.name;
         event.description = dto.description;
-        event.featuredImage = dto.featuredImage;
-        event.goalAmount = dto.goalAmount;
+        event.featured_image = dto.featured_image;
+        event.goal_amount = dto.goal_amount;
 
         try {
             await (event as any).save()
@@ -69,9 +69,7 @@ export class EventService {
         return event
     }
 
-    async find(filter: IEventFilterDto, start: number = 0, limit: number = 15, user?: User): Promise<Event[]> {
-        let events: Event[] = []
-
+    private findQueryBuilder(filter: IEventFilterDto, user?: User) {
         let filterIsValid = EventFilterDto.validate(filter)
         if (filterIsValid.error) {
             throw filterIsValid.error
@@ -85,30 +83,43 @@ export class EventService {
         }
 
         // Filter by goal amount range (optional)
-        if (filter.minAmount && filter.maxAmount) {
-            queryBuilder.andWhere('event.goalAmount BETWEEN :minAmount AND :maxAmount', {
-                minAmount: filter.minAmount,
-                maxAmount: filter.maxAmount,
+        if (filter.min_amount && filter.max_amount) {
+            queryBuilder.andWhere('event.goal_amount BETWEEN :minAmount AND :maxAmount', {
+                minAmount: filter.min_amount,
+                maxAmount: filter.max_amount,
             });
-        } else if (filter.minAmount) {
-            queryBuilder.andWhere('event.goalAmount >= :minAmount', { minAmount: filter.minAmount });
-        } else if (filter.maxAmount) {
-            queryBuilder.andWhere('event.goalAmount <= :maxAmount', { maxAmount: filter.maxAmount });
+        } else if (filter.min_amount) {
+            queryBuilder.andWhere('event.goal_amount >= :minAmount', { minAmount: filter.min_amount });
+        } else if (filter.max_amount) {
+            queryBuilder.andWhere('event.goal_amount <= :maxAmount', { maxAmount: filter.max_amount });
         }
 
         // Filter by transaction ID (optional)
-        if (filter.transactionId) {
-            queryBuilder.andWhere('event.ethTransactionId = :transactionId', { transactionId: filter.transactionId });
+        if (filter.transaction_id) {
+            queryBuilder.andWhere('event.eth_transaction_id = :transactionId', { transactionId: filter.transaction_id });
         }
 
         // Filter by block number (optional)
-        if (filter.blockNumber) {
-            queryBuilder.andWhere('event.blockNumber = :blockNumber', { blockNumber: filter.blockNumber });
+        if (filter.block_number) {
+            queryBuilder.andWhere('event.block_number = :blockNumber', { blockNumber: filter.block_number });
         }
 
         if (user != undefined) {
             queryBuilder.andWhere(`event.user.id = :userId`, { userId: user.id })
         }
+
+        return queryBuilder
+    }
+
+    async find(filter: IEventFilterDto, start: number = 0, limit: number = 15, user?: User): Promise<Event[]> {
+        let events: Event[] = []
+
+        let filterIsValid = EventFilterDto.validate(filter)
+        if (filterIsValid.error) {
+            throw filterIsValid.error
+        }
+
+        let queryBuilder = this.findQueryBuilder(filter, user)
 
         queryBuilder.skip(start).take(limit);
 
@@ -119,5 +130,21 @@ export class EventService {
         }
 
         return events
+    }
+
+
+
+    async findOne(filter: IEventFilterDto, start: number = 0, limit: number = 15, user?: User): Promise<Event | null> {
+        let event: Event | null
+
+        let queryBuilder = this.findQueryBuilder(filter, user)
+
+        try {
+            event = await queryBuilder.getOne()
+        } catch (err) {
+            throw err
+        }
+
+        return event
     }
 }

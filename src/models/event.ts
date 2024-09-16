@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BaseEntity } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BaseEntity, OneToMany } from 'typeorm';
 import { User } from './user'; // Assuming you have a User entity defined
+import { Fund } from './fund';
 
 @Entity()
 export class Event extends BaseEntity {
@@ -16,17 +17,20 @@ export class Event extends BaseEntity {
     description!: string;
 
     @Column()
-    featuredImage!: string;
+    featured_image!: string;
 
     @Column({ type: 'bigint' })
-    blockNumber!: number;
+    block_number!: number;
 
     @Column({ length: 128 })
-    ethTransactionId!: string;
+    eth_transaction_id!: string;
 
     @Column({ type: 'bigint', default: 0 })
-    goalAmount!: number;
+    goal_amount!: number;
 
     @Column({ type: 'bigint', default: 0 })
-    goalAchieved!: number;
+    goal_achieved!: number;
+
+    @OneToMany(() => Fund, (fund) => fund.event)
+    received_funds!: Fund[];
 }

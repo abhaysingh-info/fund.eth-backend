@@ -45,7 +45,7 @@ export class UserService {
         u.password = await u.getHash(u.password);
 
         // creating a email verification token
-        u.emailVerifyToken = (
+        u.email_verify_token = (
             await u.getHash(u.email + Date.now())
         ).split('.')[1];
 
@@ -73,17 +73,17 @@ export class UserService {
 
     async verifyEmail(token: string) {
         const user = await this.User.findOneBy({
-            emailVerifyToken: token,
+            email_verify_token: token,
         });
         if (!user) {
             throw new Error('User not found!');
         }
 
-        if (user.emailVerified) {
+        if (user.email_verified) {
             return user;
         }
 
-        user.emailVerified = true;
+        user.email_verified = true;
 
         try {
             await user.save()

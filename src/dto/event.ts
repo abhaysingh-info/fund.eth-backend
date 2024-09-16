@@ -4,23 +4,23 @@ import type { IEventCreateDto, IEventUpdateDto } from "..//types/event"
 export const EventCreateDto: Joi.ObjectSchema<IEventCreateDto> = Joi.object({
     name: Joi.string().required(),
     description: Joi.string().required(),
-    featuredImage: Joi.string().required(),
-    blockNumber: Joi.number().required(),
-    ethTransactionId: Joi.string().required(),
-    goalAmount: Joi.number().required(),
+    featured_image: Joi.string().required(),
+    block_number: Joi.number().required(),
+    eth_transaction_id: Joi.string().required(),
+    goal_amount: Joi.number().required(),
 });
 
 export const EventUpdateDto: Joi.ObjectSchema<IEventUpdateDto> = Joi.object({
     name: Joi.string(),
     description: Joi.string(),
-    featuredImage: Joi.string(),
-    goalAmount: Joi.number(),
+    featured_image: Joi.string(),
+    goal_amount: Joi.number(),
 });
 
 export const EventFilterDto = Joi.object({
     name: Joi.string().optional(),
-    minAmount: Joi.number().optional(),
-    maxAmount: Joi.number().optional(),
-    transactionId: Joi.string().optional(),
-    blockNumber: Joi.number().optional(),
+    min_amount: Joi.number().optional(),
+    max_amount: Joi.number().optional(),
+    transaction_id: Joi.string().optional(),
+    block_number: Joi.number().optional(),
 });

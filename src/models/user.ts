@@ -3,6 +3,7 @@ import { sign as JWTSign, verify as JWTVerify } from "jsonwebtoken"
 import { getHash, getRandomBytes, scryptHash } from '../utils';
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Event } from "./event";
+import { Fund } from "./fund";
 
 
 
@@ -27,31 +28,37 @@ export class User extends BaseEntity {
     password!: string;
 
     @Column({ type: 'int', nullable: false, default: 0 })
-    passwordTries!: number;
+    password_tries!: number;
 
     @Column({ type: 'varchar', length: 255, nullable: false, default: '' })
-    emailVerifyToken!: string;
+    email_verify_token!: string;
 
     @Column({ type: 'boolean', nullable: false, default: false })
-    emailVerified!: boolean;
+    email_verified!: boolean;
 
     @Column({ type: 'boolean', nullable: false, default: false })
-    isBlocked!: boolean;
+    is_blocked!: boolean;
 
     @Column({ type: 'boolean', nullable: false, default: false })
     suspended!: boolean;
 
     @Column({ type: 'varchar', length: 255, nullable: false, default: '' })
-    passwordResetToken!: string;
+    password_reset_token!: string;
 
     @Column({ type: 'boolean', nullable: false, default: false })
-    accountSuspended!: boolean;
+    account_suspended!: boolean;
 
     @Column({ type: 'varchar', length: 255, nullable: true })
-    walletAddress!: string | null;
+    wallet_address!: string | null;
 
-    @OneToMany(() => Event, (event) => event.user) // Define the relationship
+    @OneToMany(() => Event, (event) => event.user)
     events!: Event[];
+
+    @OneToMany(() => Fund, (event) => event.funder)
+    funded!: Fund[];
+
+    @OneToMany(() => Fund, (event) => event.receiver)
+    received!: Fund[];
 
 
     async getHash(value: string) {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { User } from "../models/user"
 import { randomBytes, scryptSync } from 'crypto'
-
+import { verify as JWTVerify } from "jsonwebtoken"
 
 export async function getHash(
     password: string,
@@ -42,8 +42,16 @@ export async function SetLoginToken(res: Response, user: User) {
             id: user.id,
             email: user.email,
             name: user.name,
-            isBlocked: user.isBlocked,
+            isBlocked: user.is_blocked,
             suspended: user.suspended,
         },
     };
+}
+
+export function verifyJwtToken(token: string) {
+    try {
+        return JWTVerify(token, process.env.JWT_SECRET as string);
+    } catch (error) {
+        return null;
+    }
 }

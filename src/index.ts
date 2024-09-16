@@ -3,6 +3,7 @@ import "reflect-metadata"
 import express from "express"
 import { configDotenv } from "dotenv"
 import { User } from "./models/user"
+import { AttachUser } from "./middlewares/attach-user"
 const cors = require("cors")
 
 configDotenv()
@@ -20,6 +21,9 @@ const app = express()
 
 app.use(express.json())
 app.use(cors())
+app.use(AttachUser)
+
+
 
 
 
