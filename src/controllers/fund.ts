@@ -12,7 +12,7 @@ export async function FundCreate(req: Request, res: Response) {
     let eventId = `${req.params.eventId}`
     let user = req.user
 
-    if (isNaN(parseInt(eventId))) {
+    if (!Number.isSafeInteger(req.params.eventId)) {
         res.status(400).json({ message: `invalid event id` })
     }
 
@@ -37,4 +37,22 @@ export async function FundCreate(req: Request, res: Response) {
         return
     }
 
+}
+
+export async function FundFilter(req: Request, res: Response) {
+    let start: number
+
+    if (!Number.isSafeInteger(req.query.start)) {
+        start = 0
+    } else {
+        start = parseInt(`${req.query.start}`)
+    }
+
+    try {
+        let user = req.user
+        let event = await fundService.find(start, 20, user);
+        return res.status(200).json({ event })
+    } catch (err: any) {
+        return res.status(400).json({ message: err.message })
+    }
 }

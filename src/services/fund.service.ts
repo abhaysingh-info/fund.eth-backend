@@ -37,4 +37,29 @@ export class FundService {
         return fund
     }
 
+    private findQueryBuilder(user?: User) {
+        let queryBuilder = this.Model.createQueryBuilder()
+
+        if (user != undefined) {
+            queryBuilder.andWhere(`event.user.id = :userId`, { userId: user.id })
+        }
+
+        return queryBuilder
+    }
+
+    async find(start: number = 0, limit: number = 15, user: User): Promise<Fund[]> {
+        let funds: Fund[] = []
+
+        let queryBuilder = this.findQueryBuilder(user)
+        queryBuilder.skip(start).take(limit);
+
+        try {
+            funds = await queryBuilder.getMany()
+        } catch (err) {
+            throw err
+        }
+
+        return funds
+    }
+
 }

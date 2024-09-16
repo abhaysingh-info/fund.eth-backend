@@ -20,7 +20,7 @@ export async function EventUpdate(req: Request, res: Response) {
     let body = req.body
     let id = req.params.id
 
-    if (isNaN(parseInt(id))) {
+    if (!Number.isSafeInteger(id)) {
         return res.status(400).json({ message: "invalid id" })
     }
 
@@ -37,7 +37,7 @@ export async function EventFilter(req: Request, res: Response) {
     let body = req.body
     let start: number
 
-    if (isNaN(parseInt(`${req?.query?.start}` || ""))) {
+    if (!Number.isSafeInteger(req.query.start)) {
         start = 0
     } else {
         start = parseInt(`${req.query.start}`)
@@ -55,7 +55,7 @@ export async function EventOfUserFilter(req: Request, res: Response) {
     let body = req.body
     let start: number
 
-    if (isNaN(parseInt(`${req?.query?.start}` || ""))) {
+    if (!Number.isSafeInteger(req.query.start)) {
         start = 0
     } else {
         start = parseInt(`${req.query.start}`)

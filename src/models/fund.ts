@@ -1,9 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, BaseEntity } from 'typeorm';
 import { User } from './user'; // Assuming you have a User entity
 import { Event } from './event'; // Assuming you have an Event entity
 
 @Entity()
-export class Fund {
+export class Fund extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
