@@ -41,8 +41,7 @@ var corsOptions = {
     credentials: true,
 }
 
-// app.use(cors(corsOptions))
-// app.use(AttachUser)
+app.use(cors(corsOptions))
 
 
 app.use("/user", UserRoutes)
