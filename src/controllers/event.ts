@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import { EventService } from "../services/event.service"
+import {parse} from "dotenv";
 
 
 let eventService = new EventService()

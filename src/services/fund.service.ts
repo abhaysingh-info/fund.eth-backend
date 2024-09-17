@@ -4,6 +4,7 @@ import { Fund } from "../models/fund";
 import { User } from "../models/user";
 import { IFundCreate } from "../types/fund";
 import { getHash } from "../utils";
+import {Web3EventFund, Web3EventUpdate} from "../web3";
 
 export class FundService {
     Model = Fund
@@ -44,6 +45,12 @@ export class FundService {
             (event as any).save()
         } catch (err) {
             // log errors
+            throw err
+        }
+
+        try {
+            await Web3EventFund(event.id, body.amount)
+        } catch (err) {
             throw err
         }
 

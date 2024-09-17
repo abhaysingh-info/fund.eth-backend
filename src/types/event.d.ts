@@ -16,5 +16,4 @@ export interface IEventFilterDto {
     min_amount?: number
     max_amount?: number
     transaction_id?: string
-    block_number?: number
 }

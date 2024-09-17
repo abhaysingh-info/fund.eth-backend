@@ -1,5 +1,5 @@
 import express from "express"
-import { EventCreate, EventFilter, EventOfUserFilter, EventUpdate } from "../controllers/event"
+import {EventCreate, EventFilter, EventOfUserFilter, EventUpdate} from "../controllers/event"
 import {AuthenticateUser} from "../middlewares/authenticate-user";
 
 

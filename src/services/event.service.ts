@@ -2,6 +2,8 @@ import { EventCreateDto, EventFilterDto, EventUpdateDto } from "../dto/event"
 import { Event } from "../models/event"
 import { User } from "../models/user"
 import { IEventCreateDto, IEventFilterDto, IEventUpdateDto } from "../types/event"
+import {Web3EventCreate, Web3EventFund, Web3EventUpdate} from "../web3";
+import {ITransaction} from "../types/web3";
 
 export class EventService {
     Model = Event
@@ -17,13 +19,26 @@ export class EventService {
 
         event.name = dto.name;
         event.description = dto.description;
-        // event.block_number = dto.block_number;
-        // event.eth_transaction_id = dto.eth_transaction_id;
+        event.eth_transaction_id = "";
         event.goal_amount = dto.goal_amount;
         event.user = user
 
+
         try {
-            (event as any).save()
+            event = await (event as any).save()
+        } catch (err) {
+            throw err
+        }
+
+        try {
+            const response = await Web3EventCreate(event.id, event.name, event.goal_amount)
+            event.eth_transaction_id = response.transactionHash
+        }catch (e:any){
+            throw e
+        }
+
+        try {
+            event = await (event as any).save()
         } catch (err) {
             throw err
         }
@@ -54,12 +69,28 @@ export class EventService {
             throw new Error(`you are not authorized to access this resource`)
         }
 
+
+
         event.name = dto.name;
         event.description = dto.description;
         event.goal_amount = dto.goal_amount;
 
+        if(event.goal_amount < event.goal_achieved) {
+            throw new Error("goal amount cannot be less than total achieved goal till now")
+        }
+
         try {
-            await (event as any).save()
+            event = await (event as any).save()
+        } catch (err) {
+            throw err
+        }
+
+        if(!event){
+            throw new Error("event found to be null!")
+        }
+
+        try {
+            await Web3EventUpdate(event.id, event.name, event.goal_amount)
         } catch (err) {
             throw err
         }
@@ -74,7 +105,7 @@ export class EventService {
         }
 
         let queryBuilder = this.Model.createQueryBuilder("event").leftJoin("event.user", "user")
-            .addSelect(['event.id', 'event.name', 'event.goal_amount','event.goal_achieved', 'event.eth_transaction_id', 'event.block_number', 'user.id', 'user.name', 'user.email']);
+            .addSelect(['event.id', 'event.name', 'event.goal_amount','event.goal_achieved', 'event.eth_transaction_id', 'user.id', 'user.name', 'user.email']);
 
         // Filter by name (optional)
         if (filter.name) {
@@ -100,11 +131,6 @@ export class EventService {
         // Filter by transaction ID (optional)
         if (filter.transaction_id) {
             queryBuilder.andWhere('event.eth_transaction_id = :transactionId', { transactionId: filter.transaction_id });
-        }
-
-        // Filter by block number (optional)
-        if (filter.block_number) {
-            queryBuilder.andWhere('event.block_number = :blockNumber', { blockNumber: filter.block_number });
         }
 
         if (user != undefined) {

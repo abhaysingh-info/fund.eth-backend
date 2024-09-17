@@ -16,9 +16,6 @@ export class Event extends BaseEntity {
     @Column()
     description!: string;
 
-    @Column({ type: 'bigint', default:0 })
-    block_number!: number;
-
     @Column({ length: 128, default: "" })
     eth_transaction_id!: string;
 

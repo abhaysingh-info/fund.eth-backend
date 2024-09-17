@@ -18,6 +18,5 @@ export const EventFilterDto = Joi.object({
     id: Joi.number().min(1).optional(),
     min_amount: Joi.number().optional(),
     max_amount: Joi.number().optional(),
-    transaction_id: Joi.string().optional(),
-    block_number: Joi.number().optional(),
+    transaction_id: Joi.string().optional()
 });
