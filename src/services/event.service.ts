@@ -80,6 +80,10 @@ export class EventService {
         if (filter.name) {
             queryBuilder.andWhere('event.name LIKE :name', { name: `%${filter.name}%` });
         }
+        // Filter by name (optional)
+        if (filter.id) {
+            queryBuilder.andWhere('event.id = :id', { id: filter.id });
+        }
 
         // Filter by goal amount range (optional)
         if (filter.min_amount && filter.max_amount) {
@@ -107,7 +111,7 @@ export class EventService {
             queryBuilder.andWhere(`event.user.id = :userId`, { userId: user.id })
         }
 
-        queryBuilder.orderBy("event.created_at", "DESC")
+        queryBuilder.orderBy("event.id", "DESC")
 
         return queryBuilder
     }

@@ -9,6 +9,7 @@ export class FundService {
     Model = Fund
 
     async fund(body: IFundCreate, event: Event, user: User) {
+
         if (event.user.id == user.id) {
             throw new Error("you cannot fund your self")
         }
@@ -28,6 +29,7 @@ export class FundService {
         fund.block_number = 0
         fund.transaction_id = ""
         fund.date = new Date()
+        fund.event = event
         // replace all blockchain related fields with actual values received from blockchain here
 
         try {
@@ -49,10 +51,12 @@ export class FundService {
     }
 
     private findQueryBuilder(user?: User) {
-        let queryBuilder = this.Model.createQueryBuilder()
+        let queryBuilder = this.Model.createQueryBuilder("fund").leftJoin("fund.funder", "funder").leftJoin('fund.receiver', 'receiver').leftJoin('fund.event', 'event')
+            .addSelect(['fund.id', 'fund.amount','fund.transaction_id', 'fund.block_number', 'fund.date', 'event.name', 'funder.id', 'funder.name', 'funder.email', 'receiver.id', 'receiver.name', 'receiver.email']);
 
         if (user != undefined) {
-            queryBuilder.andWhere(`event.user.id = :userId`, { userId: user.id })
+            // queryBuilder.andWhere(`fund.funder = :userId`, { userId: user.id })
+            // queryBuilder.andWhere(`fund.receiver = :userId`, { userId: user.id })
         }
 
         return queryBuilder

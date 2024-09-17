@@ -42,12 +42,12 @@ var corsOptions = {
 }
 
 app.use(cors(corsOptions))
-app.use(AttachUser)
+// app.use(AttachUser)
 
 
 app.use("/user", UserRoutes)
-app.use("/event", EventRoutes)
-app.use("/fund", FundRoutes)
+app.use("/event", AttachUser, EventRoutes)
+app.use("/fund", AttachUser, FundRoutes)
 
 app.listen(process.env.PORT || 4000, () => {
     console.log(`Server running -> http://0.0.0.0:${process.env.PORT || 4000}/`)

@@ -42,6 +42,8 @@ export async function FundCreate(req: Request, res: Response) {
 export async function FundFilter(req: Request, res: Response) {
     let start: number
 
+    // Add feature: filters
+
     if (!Number.isSafeInteger(parseInt(`${req.query.start}`))) {
         start = 0
     } else {
@@ -50,8 +52,8 @@ export async function FundFilter(req: Request, res: Response) {
 
     try {
         let user = req.user
-        let event = await fundService.find(start, 20, user);
-        return res.status(200).json({ event })
+        let transactions = await fundService.find(start, 20, user);
+        return res.status(200).json({ transactions })
     } catch (err: any) {
         return res.status(400).json({ message: err.message })
     }

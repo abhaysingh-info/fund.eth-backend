@@ -15,13 +15,16 @@
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "ethers": "^6.13.2",
     "express": "^4.21.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "nodemon": "^3.1.4",
     "reflect-metadata": "^0.2.2",
     "sqlite3": "^5.1.7",
-    "typeorm": "^0.3.20"
+    "truffle": "^5.11.5",
+    "typeorm": "^0.3.20",
+    "web3": "^4.12.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

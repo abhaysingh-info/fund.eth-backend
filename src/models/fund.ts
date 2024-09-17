@@ -7,13 +7,13 @@ export class Fund extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @ManyToOne(() => User, (user) => user.funded)
+    @ManyToOne(() => User, (user) => user.funded, {cascade: true, nullable: false, eager: true, })
     funder!: User;
 
-    @ManyToOne(() => User, (user) => user.received)
+    @ManyToOne(() => User, (user) => user.received, {cascade: true, nullable: false, eager: true, })
     receiver!: User;
 
-    @ManyToOne(() => Event, (event) => event.received_funds)
+    @ManyToOne(() => Event, (event) => event.received_funds, {cascade: true, nullable: false, eager: true, })
     event!: Event;
 
     @Column({ type: 'bigint' })
