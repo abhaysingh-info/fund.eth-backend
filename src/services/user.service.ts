@@ -40,7 +40,8 @@ export class UserService {
 
 
         // encrypting the password
-        u.password = await u.getHash(u.password);
+
+        u.password = await u.getHash(createUserDto.password);
 
         // creating a email verification token
         u.email_verify_token = (

@@ -18,15 +18,15 @@ export async function EventCreate(req: Request, res: Response) {
 
 export async function EventUpdate(req: Request, res: Response) {
     let body = req.body
-    let id = req.params.eventId
+    let id = parseInt(`${req.params.eventId}`)
 
-    if (!Number.isSafeInteger(id)) {
+    if (!Number.isInteger(id)) {
         return res.status(400).json({ message: "invalid id" })
     }
 
     try {
         let user = req.user
-        let event = await eventService.update(parseInt(id), body, user);
+        let event = await eventService.update(id, body, user);
         return res.status(201).json({ event })
     } catch (err: any) {
         return res.status(400).json({ message: err.message })

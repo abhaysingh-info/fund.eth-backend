@@ -108,5 +108,8 @@ export async function UserLogout(req: Request, res: Response) {
 }
 
 export async function UserVerifySession(req: Request, res: Response) {
-    return res.status(200).json({ success: true });
+    (req.user as any).password = undefined;
+    (req.user as any).password_tries = undefined;
+    (req.user as any).email_verify_token = undefined;
+    return res.status(200).json({ success: true, user: req.user });
 }

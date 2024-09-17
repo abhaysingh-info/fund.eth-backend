@@ -50,7 +50,7 @@ export class User extends BaseEntity {
     @Column({ type: 'varchar', length: 255, nullable: true })
     wallet_address!: string | null;
 
-    @OneToMany(() => Event, (event) => event.user)
+    @OneToMany(() => Event, (event) => event.user, {})
     events!: Event[];
 
     @OneToMany(() => Fund, (event) => event.funder)

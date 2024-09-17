@@ -9,16 +9,16 @@ const eventService = new EventService()
 
 export async function FundCreate(req: Request, res: Response) {
     let body = req.body
-    let eventId = `${req.params.eventId}`
+    let eventId = parseInt(`${req.params.eventId}`)
     let user = req.user
 
-    if (!Number.isSafeInteger(req.params.eventId)) {
+    if (!Number.isInteger(eventId)) {
         res.status(400).json({ message: `invalid event id` })
     }
 
     let event: Event | null
     try {
-        event = await eventService.findOne({ id: parseInt(eventId) })
+        event = await eventService.findOne({ id: eventId }, 0)
     } catch (err: any) {
         res.status(400).json({ message: err.message })
         return
@@ -42,7 +42,7 @@ export async function FundCreate(req: Request, res: Response) {
 export async function FundFilter(req: Request, res: Response) {
     let start: number
 
-    if (!Number.isSafeInteger(req.query.start)) {
+    if (!Number.isSafeInteger(parseInt(`${req.query.start}`))) {
         start = 0
     } else {
         start = parseInt(`${req.query.start}`)

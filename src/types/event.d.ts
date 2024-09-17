@@ -1,16 +1,12 @@
 export interface IEventCreateDto {
     name: string;
     description: string;
-    featured_image: string;
-    block_number: number;
-    eth_transaction_id: string;
     goal_amount: number;
 }
 
 export interface IEventUpdateDto {
     name: string;
     description: string;
-    featured_image: string;
     goal_amount: number;
 }
 

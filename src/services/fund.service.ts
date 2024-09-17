@@ -24,13 +24,24 @@ export class FundService {
         fund.funder = user
         fund.receiver = event.user
         fund.transaction_id = await getHash(`${new Date().getMilliseconds()}`)
-
+        fund.sent_from = ""
+        fund.block_number = 0
+        fund.transaction_id = ""
+        fund.date = new Date()
         // replace all blockchain related fields with actual values received from blockchain here
 
         try {
             (fund as any).save()
         } catch (err) {
             // log errors 
+            throw err
+        }
+
+        try {
+            event.goal_achieved += body.amount;
+            (event as any).save()
+        } catch (err) {
+            // log errors
             throw err
         }
 

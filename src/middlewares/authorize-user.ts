@@ -12,7 +12,7 @@ export async function AttachUser(req: Request, res: Response, next: () => void) 
         const decoded = verifyJwtToken(token) as any;
         const user = await userService.findOneByEmail(decoded?.email);
         if (!user) {
-            res.status(400).json({ message: 'User not found!' });
+            res.status(404).json({ message: 'User not found!' });
             return
         }
         if (user?.is_blocked) {

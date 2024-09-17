@@ -1,4 +1,3 @@
-import { QueryBuilder } from "typeorm"
 import { EventCreateDto, EventFilterDto, EventUpdateDto } from "../dto/event"
 import { Event } from "../models/event"
 import { User } from "../models/user"
@@ -18,10 +17,10 @@ export class EventService {
 
         event.name = dto.name;
         event.description = dto.description;
-        event.featured_image = dto.featured_image;
-        event.block_number = dto.block_number;
-        event.eth_transaction_id = dto.eth_transaction_id;
+        // event.block_number = dto.block_number;
+        // event.eth_transaction_id = dto.eth_transaction_id;
         event.goal_amount = dto.goal_amount;
+        event.user = user
 
         try {
             (event as any).save()
@@ -57,7 +56,6 @@ export class EventService {
 
         event.name = dto.name;
         event.description = dto.description;
-        event.featured_image = dto.featured_image;
         event.goal_amount = dto.goal_amount;
 
         try {
@@ -75,7 +73,8 @@ export class EventService {
             throw filterIsValid.error
         }
 
-        let queryBuilder = this.Model.createQueryBuilder()
+        let queryBuilder = this.Model.createQueryBuilder("event").leftJoin("event.user", "user")
+            .addSelect(['event.id', 'event.name', 'event.goal_amount','event.goal_achieved', 'event.eth_transaction_id', 'event.block_number', 'user.id', 'user.name', 'user.email']);
 
         // Filter by name (optional)
         if (filter.name) {
@@ -108,6 +107,8 @@ export class EventService {
             queryBuilder.andWhere(`event.user.id = :userId`, { userId: user.id })
         }
 
+        queryBuilder.orderBy("event.created_at", "DESC")
+
         return queryBuilder
     }
 
@@ -128,6 +129,8 @@ export class EventService {
         } catch (err) {
             throw err
         }
+
+
 
         return events
     }
